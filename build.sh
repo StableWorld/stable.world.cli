@@ -1,5 +1,5 @@
 #!/bin/sh
-set -eo pipefail
+set -e
 
 COMMAND=$1
 export GOOS=${2:-$(go env GOOS)}

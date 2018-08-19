@@ -36,22 +36,27 @@ jobs:
             for artifact in bin/*; do
               github-release upload \
               -s "$GITHUB_TOKEN" --user StableWorld --repo stable.world.cli \
-              --tag v0.0.1  \
+              --tag "$CIRCLE_TAG"  \
               --name "$(basename $artifact)" --file "$artifact"
             done
       - run:
           name: Edit Release
           command: github-release edit
               -s "$GITHUB_TOKEN" --user StableWorld --repo stable.world.cli
-              --tag v0.0.1 -d "Hello Github Release" -p
-
+              --tag "$CIRCLE_TAG" -d "Stable.World Client Release $CIRCLE_TAG"
 
 workflows:
   version: 2
-  build-test-and-deploy:
+  build:
+  #   jobs:
+  #     - build
+  # tagged-build:
     jobs:
       - build
       - deploy:
           context: org-global
           requires:
             - build
+          filters:
+            tags:
+              only: /^v.*/

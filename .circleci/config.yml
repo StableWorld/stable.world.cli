@@ -34,7 +34,7 @@ jobs:
       - run:
           name: Edit Release
           command: github-release edit
-              -s $GITHUB_TOKEN --user StableWorld --repo stable.world.cli
+              -s "$GITHUB_TOKEN" --user StableWorld --repo stable.world.cli
               --tag v0.0.1 -d "Hello Github Release" -p
 
 
@@ -44,5 +44,6 @@ workflows:
     jobs:
       - build
       - deploy:
+          context: org-global
           requires:
             - build

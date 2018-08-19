@@ -1,4 +1,4 @@
-package pip
+package main
 
 import (
 	"fmt"

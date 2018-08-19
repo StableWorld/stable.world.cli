@@ -26,9 +26,10 @@ jobs:
       - attach_workspace:
           at: /go/src/github.com/StableWorld/stable.world.cli
       - run:
+          name: Install gitlab-release
+          command: go get github.com/aktau/github-release
           name: Check artifacts
-          command: |
-            ls -la bin
+          command: ls -la bin
           name: Edit Release
           command: github-release edit
               -s $GITHUB_TOKEN --user StableWorld --repo stable.world.cli

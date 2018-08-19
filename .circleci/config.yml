@@ -32,6 +32,15 @@ jobs:
           name: Check artifacts
           command: ls -la bin
       - run:
+          name: Upload
+          command: |
+            for artifact in bin/*; do
+              github-release upload \
+              -s "$GITHUB_TOKEN" --user StableWorld --repo stable.world.cli \
+              --tag v0.0.1  \
+              --name "$artifact" --file "./bin/$artifact"
+            done
+      - run:
           name: Edit Release
           command: github-release edit
               -s "$GITHUB_TOKEN" --user StableWorld --repo stable.world.cli

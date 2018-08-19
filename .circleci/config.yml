@@ -24,7 +24,7 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-        at: /go/src/github.com/StableWorld/stable.world.cli
+          at: /go/src/github.com/StableWorld/stable.world.cli
       - run:
           name: build scurl
           command: go build -o bin/scurl commands/curl/main.go

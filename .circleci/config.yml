@@ -12,6 +12,10 @@ jobs:
       - checkout
       - run: ./build.sh scurl darwin amd64
       - run: ./build.sh scurl linux amd64
+      - store_artifacts:
+          path: /go/src/github.com/StableWorld/stable.world.cli/bin
+          destination: binaries
+
       - persist_to_workspace:
           root: /go/src/github.com/StableWorld/stable.world.cli
           paths:

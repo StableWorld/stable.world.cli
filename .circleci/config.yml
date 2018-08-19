@@ -10,4 +10,5 @@ jobs:
       - image: circleci/golang:1.9
     steps:
       - checkout
-      - go build -o bin/curl commands/curl/main.go
+      - run:
+        - go build -o bin/curl commands/curl/main.go

@@ -11,4 +11,6 @@ jobs:
     steps:
       - checkout
       - run:
-        - go build -o bin/curl commands/curl/main.go
+          name: build
+          command:
+            - go build -o bin/curl commands/curl/main.go

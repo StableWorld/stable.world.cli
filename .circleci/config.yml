@@ -35,6 +35,11 @@ jobs:
           name: Check artifacts
           command: ls -la bin
       - run:
+          name: Create Release
+          command: github-release release
+              -s "$GITHUB_TOKEN" --user StableWorld --repo stable.world.cli
+              --tag "$CIRCLE_TAG" -d "Stable.World Client Release $CIRCLE_TAG"
+      - run:
           name: Upload
           command: |
             for artifact in bin/*; do
@@ -60,7 +65,6 @@ workflows:
           filters:
             tags:
               only: /^v.*/
-
       - deploy:
           context: org-global
           requires:

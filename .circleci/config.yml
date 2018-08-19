@@ -10,12 +10,8 @@ jobs:
       - image: circleci/golang:1.9
     steps:
       - checkout
-      - run:
-          name: build scurl-darwin-amd64
-          command: GOOS=darwin GOARCH=amd64 go build -o bin/scurl-$GOOS-$GOARCH commands/curl/main.go
-      - run:
-          name: build scurl-linux-amd64
-          command: GOOS=linux GOARCH=amd64 go build -o bin/scurl-$GOOS-$GOARCH commands/curl/main.go
+      - run: build.sh scurl darwin amd64
+      - run: build.sh scurl linux amd64
       - persist_to_workspace:
           root: /go/src/github.com/StableWorld/stable.world.cli
           paths:

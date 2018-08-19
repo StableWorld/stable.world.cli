@@ -28,8 +28,10 @@ jobs:
       - run:
           name: Install gitlab-release
           command: go get github.com/aktau/github-release
+      - run:
           name: Check artifacts
           command: ls -la bin
+      - run:
           name: Edit Release
           command: github-release edit
               -s $GITHUB_TOKEN --user StableWorld --repo stable.world.cli
@@ -41,4 +43,6 @@ workflows:
   build-test-and-deploy:
     jobs:
       - build
-      - deploy
+      - deploy:
+          requires:
+            - build

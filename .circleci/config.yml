@@ -13,3 +13,26 @@ jobs:
       - run:
           name: build scurl
           command: go build -o bin/scurl commands/curl/main.go
+      - persist_to_workspace:
+          root: /go/src/github.com/StableWorld/stable.world.cli
+          paths:
+            - bin
+  deploy:
+    working_directory: /go/src/github.com/StableWorld/stable.world.cli
+    docker:
+      - image: circleci/golang:1.9
+    steps:
+      - checkout
+      - attach_workspace:
+        at: /go/src/github.com/StableWorld/stable.world.cli
+      - run:
+          name: build scurl
+          command: go build -o bin/scurl commands/curl/main.go
+
+
+workflows:
+  version: 2
+  build-test-and-deploy:
+    jobs:
+      - build
+      - deploy

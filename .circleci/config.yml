@@ -56,7 +56,11 @@ workflows:
   #     - build
   # tagged-build:
     jobs:
-      - build
+      - build:
+          filters:
+            tags:
+              only: /^v.*/
+
       - deploy:
           context: org-global
           requires:

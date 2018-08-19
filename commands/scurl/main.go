@@ -1,4 +1,4 @@
-package curl
+package main
 
 import (
 	"fmt"
@@ -7,7 +7,7 @@ import (
 	"os/exec"
 	"strings"
 
-	"github.com/srossross/stable.world.cli/commands/common"
+	"github.com/StableWorld/stable.world.cli/commands/common"
 )
 
 var logger *log.Logger

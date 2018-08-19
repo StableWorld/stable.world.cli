@@ -1,0 +1,73 @@
+
+environment:
+  CONTAINER: stable.world.cli
+
+version: 2
+jobs:
+  build:
+    working_directory: /go/src/github.com/StableWorld/stable.world.cli
+    docker:
+      - image: circleci/golang:1.9
+    steps:
+      - checkout
+      - run: ./build.sh scurl darwin amd64
+      - run: ./build.sh scurl linux amd64
+      - store_artifacts:
+          path: /go/src/github.com/StableWorld/stable.world.cli/bin
+          destination: binaries
+
+      - persist_to_workspace:
+          root: /go/src/github.com/StableWorld/stable.world.cli
+          paths:
+            - bin
+  deploy:
+    working_directory: /go/src/github.com/StableWorld/stable.world.cli
+    docker:
+      - image: circleci/golang:1.9
+    steps:
+      - checkout
+      - attach_workspace:
+          at: /go/src/github.com/StableWorld/stable.world.cli
+      - run:
+          name: Install gitlab-release
+          command: go get github.com/aktau/github-release
+      - run:
+          name: Check artifacts
+          command: ls -la bin
+      - run:
+          name: Create Release
+          command: github-release release
+              -s "$GITHUB_TOKEN" --user StableWorld --repo stable.world.cli
+              --tag "$CIRCLE_TAG" -d "Stable.World Client Release $CIRCLE_TAG"
+      - run:
+          name: Upload
+          command: |
+            for artifact in bin/*; do
+              github-release upload \
+              -s "$GITHUB_TOKEN" --user StableWorld --repo stable.world.cli \
+              --tag "$CIRCLE_TAG"  \
+              --name "$(basename $artifact)" --file "$artifact"
+            done
+      - run:
+          name: Edit Release
+          command: github-release edit
+              -s "$GITHUB_TOKEN" --user StableWorld --repo stable.world.cli
+              --tag "$CIRCLE_TAG" -d "Stable.World Client Release $CIRCLE_TAG"
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build:
+          filters:
+            tags:
+              only: /^v.*/
+      - deploy:
+          context: org-global
+          requires:
+            - build
+          filters:
+            branches:
+              ignore: /^.*/
+            tags:
+              only: /^v.*/

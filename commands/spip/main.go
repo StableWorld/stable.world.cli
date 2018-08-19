@@ -1,4 +1,4 @@
-package pip
+package main
 
 import (
 	"fmt"
@@ -6,7 +6,7 @@ import (
 	"os"
 	"os/exec"
 
-	"github.com/srossross/stable.world.cli/commands/common"
+	"github.com/StableWorld/stable.world.cli/commands/common"
 )
 
 var logger *log.Logger

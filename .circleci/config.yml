@@ -10,8 +10,8 @@ jobs:
       - image: circleci/golang:1.9
     steps:
       - checkout
-      - run: build.sh scurl darwin amd64
-      - run: build.sh scurl linux amd64
+      - run: ./build.sh scurl darwin amd64
+      - run: ./build.sh scurl linux amd64
       - persist_to_workspace:
           root: /go/src/github.com/StableWorld/stable.world.cli
           paths:

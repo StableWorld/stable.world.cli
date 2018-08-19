@@ -1,27 +1,46 @@
 #!/bin/sh
 set -eou pipefail
 
+SCRIPT_VERSION="v0.1"
+
 LOG="$TMPDIR/sw-installer.log"
+POSITIONAL=()
+VERSION=""
+INSTALL_PREFIX="/usr/local/bin"
+REPO="StableWorld/stable.world.cli"
+OS="darwin"
+ARCH="amd64"
+
+VERBOSE=""
 
 logecho(){
-  echo "$*"
-  echo "$*" > $LOG
+  if [ "$VERBOSE" == "yes" ]; then
+    echo "$*"
+  fi
+  echo  "[$(date) ${SCRIPT_VERSION}]" "$*" > $LOG
 }
+
 err_report() {
     echo "Error on line $1. Check '$LOG' for details"
 }
 
 trap 'err_report $LINENO' ERR
 
-POSITIONAL=()
-VERSION=""
-INSTALL_PREFIX="/usr/local/bin"
 
 while [[ $# -gt 0 ]]; do
   key="$1"
   case $key in
       -v|--version)
       VERSION="$2"
+      shift # past argument
+      shift # past value
+      ;;
+      --verbose)
+      VERBOSE="yes"
+      shift # past argument
+      ;;
+      --log)
+      LOG="$2"
       shift # past argument
       shift # past value
       ;;
@@ -36,10 +55,17 @@ while [[ $# -gt 0 ]]; do
       ;;
   esac
 done
+if [ ${#POSITIONAL[@]} -eq 0 ]; then
+  POSITIONAL=("scurl")
+fi
 set -- "${POSITIONAL[@]}" # restore positional parameters
+COMMAND=${POSITIONAL[0]}
 
-logecho "VERSION: $VERSION"
-logecho "INSTALL_PREFIX: $INSTALL_PREFIX"
+
+for var in VERSION LOG INSTALL_PREFIX OS ARCH; do
+  logecho "${var}: ${!var}"
+done
+
 if [ -z "$VERSION" ]; then
   logecho "Fetch Latest Version ... "
   logecho "https://api.github.com/repos/$REPO/releases/latest"
@@ -47,10 +73,6 @@ if [ -z "$VERSION" ]; then
 fi
 logecho "Using version $VERSION"
 
-REPO="StableWorld/stable.world.cli"
-OS="darwin"
-ARCH="amd64"
-COMMAND=$1
 
 logecho "Downloading '$COMMAND'"
 COMMAND_PATH="$TMPDIR/$COMMAND"
@@ -59,4 +81,4 @@ curl -o "$COMMAND_PATH" -L --fail "https://github.com/$REPO/releases/download/$V
 
 chmod +x "$COMMAND_PATH"
 mv "$COMMAND_PATH" "$INSTALL_PREFIX/$COMMAND"
-# https://github.com/StableWorld/stable.world.cli/releases/download/v0.0.4/scurl-linux-amd64
+logecho "Installed $INSTALL_PREFIX/$COMMAND"

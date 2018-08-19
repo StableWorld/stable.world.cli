@@ -1,37 +1,43 @@
-## Welcome to GitHub Pages
+## Stable.World Client
 
-You can use the [editor on GitHub](https://github.com/StableWorld/stable.world.cli/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
+Stable.world provides easy to use wrapper scripts around common applications
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+### Installation
 
-### Markdown
+#### Mac OSX
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
-
-```markdown
-Syntax highlighted code block
-
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
+```sh
+curl https://install.stable.world/osx | bash -s -- <wrapper-name> [... <wrapper-name>]
 ```
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+eg to install `scurl`
 
-### Jekyll Themes
+```sh
+curl https://install.stable.world/osx | bash -s -- scurl
+```
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/StableWorld/stable.world.cli/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+### Setup
 
-### Support or Contact
+1. You need to go to https://console.stable.world and set up an account.
+2. Get your `STABLE_WORLD_BUCKET` token from the site.
+3. export your `STABLE_WORLD_BUCKET` as an environment variable.
 
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+#### Example
+
+```
+# Export the variable
+export STABLE_WORLD_BUCKET="xoxox-339339-21-x"
+
+# Run stable.world commands
+scurl http://httpbin.org/get
+```
+
+### Commands
+
+#### scurl
+
+Wrapper around `curl`
+
+#### spip
+
+Wrapper around `pip`

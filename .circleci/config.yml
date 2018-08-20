@@ -10,8 +10,17 @@ jobs:
       - image: circleci/golang:1.9
     steps:
       - checkout
-      - run: ./build.sh scurl darwin amd64
-      - run: ./build.sh scurl linux amd64
+      - run:
+         name: Build
+         command: go build ./...
+      - run:
+         name: Test
+         command: go test ./...
+      - run:
+          name: Build executables
+          command: |
+            ./build.sh scurl darwin amd64
+            ./build.sh scurl linux amd64
       - store_artifacts:
           path: /go/src/github.com/StableWorld/stable.world.cli/bin
           destination: binaries

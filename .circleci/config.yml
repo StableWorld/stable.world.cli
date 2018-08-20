@@ -17,6 +17,9 @@ jobs:
          name: Test
          command: go test ./...
       - run:
+         name: Test scurl Command
+         command: bash tests/scurl.sh
+      - run:
           name: Build executables
           command: |
             ./build.sh scurl darwin amd64

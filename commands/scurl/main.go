@@ -44,7 +44,7 @@ func main() {
 
 	if common.StableWorldBucket == "" {
 		fmt.Fprint(os.Stderr, "envvar STABLE_WORLD_BUCKET is required to be set")
-		return
+		os.Exit(1)
 	}
 	argsToCmd := transformArguments(os.Args[1:])
 	logger.Println("os.Args[0]", Curl, argsToCmd)

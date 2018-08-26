@@ -1,8 +1,13 @@
 package common
 
 import (
+	"fmt"
+	"io/ioutil"
+	"log"
+	"net/http"
 	"os"
 	"os/exec"
+	"os/user"
 	"path"
 	"strings"
 	"syscall"
@@ -37,15 +42,62 @@ func WereIs(exe string) string {
 
 // StableWorldBucket is the bucket name
 var StableWorldBucket string
+var StableWorldCA string
 
 // StableWorldURL is base url for stable.world
 var StableWorldURL string
 
+func setupRootCA() error {
+	usr, err := user.Current()
+	if err != nil {
+		return err
+	}
+
+	configDir := path.Join(usr.HomeDir, ".config", "stable.world")
+	log.Println("StableWorldCA", StableWorldCA)
+	StableWorldCA = path.Join(configDir, "ca.cert")
+
+	err = os.MkdirAll(configDir, 0700)
+	if err != nil {
+		return err
+	}
+	resp, err := http.Get(fmt.Sprintf("%s/ca.cert", StableWorldURL))
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return err
+	}
+	err = ioutil.WriteFile(StableWorldCA, body, 0644)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func init() {
+	f, err := os.OpenFile("curl.log", os.O_RDWR | os.O_CREATE, 0666)
+	if err != nil {
+		log.Fatalf("error opening file: %v", err)
+	}
+
+	log.SetOutput(f)
+
 	StableWorldBucket = os.Getenv("STABLE_WORLD_BUCKET")
 	StableWorldURL = os.Getenv("STABLE_WORLD_URL")
 	if StableWorldURL == "" {
 		StableWorldURL = "http://localhost:3011"
 	}
+	err = setupRootCA()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	log.Println("Args", os.Args)
+	log.Println("StableWorldBucket", StableWorldBucket)
+	log.Println("StableWorldURL", StableWorldURL)
+	log.Println("StableWorldCA", StableWorldCA)
 
 }

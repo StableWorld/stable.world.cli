@@ -22,8 +22,10 @@ jobs:
       - run:
           name: Build executables
           command: |
-            ./build.sh scurl darwin amd64
-            ./build.sh scurl linux amd64
+            for command in scurl spip snpm; do
+              ./build.sh $command darwin amd64
+              ./build.sh $command linux amd64
+            done
       - store_artifacts:
           path: /go/src/github.com/StableWorld/stable.world.cli/bin
           destination: binaries

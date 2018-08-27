@@ -12,11 +12,12 @@ var Exe string
 
 func main() {
 
-	npm := common.GetExecutable("pip")
+	npm := common.GetExecutable("npm")
 	argsToCmd := os.Args[1:]
 	env := []string{
-		fmt.Sprintf("PIP_PROXY=%s", common.StableWorldProxyURL),
-		fmt.Sprintf("PIP_CERT=%s", common.StableWorldCA),
+		fmt.Sprintf("http_proxy=%s", common.StableWorldProxyURL),
+		fmt.Sprintf("https_proxy=%s", common.StableWorldProxyURL),
+		fmt.Sprintf("npm_config_cafile=%s", common.StableWorldCA),
 	}
 	exitCode := common.Exec(npm, argsToCmd, env)
 	os.Exit(exitCode)

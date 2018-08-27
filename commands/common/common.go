@@ -1,6 +1,7 @@
 package common
 
 import (
+	"flag"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -71,24 +72,32 @@ func setupRootCA() error {
 }
 
 func init() {
-	f, err := os.OpenFile("curl.log", os.O_RDWR|os.O_CREATE, 0666)
-	if err != nil {
-		log.Fatalf("error opening file: %v", err)
-	}
 
-	log.SetOutput(f)
+	testing := flag.Lookup("test.v") != nil
+	if !testing {
+		f, err := os.OpenFile("curl.log", os.O_RDWR|os.O_CREATE, 0666)
+		if err != nil {
+			log.Fatalf("error opening file: %v", err)
+		}
+
+		log.SetOutput(f)
+	}
 
 	StableWorldBucket = os.Getenv("STABLE_WORLD_BUCKET")
 	if StableWorldBucket == "" {
-		fmt.Fprint(os.Stderr, "envvar STABLE_WORLD_BUCKET is required to be set")
-		os.Exit(1)
+		if testing {
+			StableWorldBucket = "TESTING"
+		} else {
+			fmt.Fprint(os.Stderr, "envvar STABLE_WORLD_BUCKET is required to be set")
+			os.Exit(1)
+		}
 	}
 
 	StableWorldURL = os.Getenv("STABLE_WORLD_URL")
 	if StableWorldURL == "" {
 		StableWorldURL = "http://localhost:3011"
 	}
-	err = setupRootCA()
+	err := setupRootCA()
 
 	parsedURL, err := url.Parse(StableWorldURL)
 	if err != nil {

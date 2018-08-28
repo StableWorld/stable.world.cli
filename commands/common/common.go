@@ -1,7 +1,6 @@
 package common
 
 import (
-	"flag"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -71,33 +70,41 @@ func setupRootCA() error {
 	return nil
 }
 
-func init() {
-
-	testing := flag.Lookup("test.v") != nil
-	if !testing {
-		f, err := os.OpenFile("curl.log", os.O_RDWR|os.O_CREATE, 0666)
-		if err != nil {
-			log.Fatalf("error opening file: %v", err)
-		}
-
-		log.SetOutput(f)
+// MakeProxyURL takes a url and a bucket an generates url with auth
+func MakeProxyURL(URL string, bucket string) string {
+	parsedURL, err := url.Parse(StableWorldURL)
+	if err != nil {
+		log.Fatal(err)
 	}
+	parsedURL.User = url.UserPassword("sw", StableWorldBucket)
+	return parsedURL.String()
+}
+
+// Defaults set default envvars
+func Defaults() {
+
+	f, err := os.OpenFile("curl.log", os.O_RDWR|os.O_CREATE, 0666)
+	if err != nil {
+		log.Fatalf("error opening file: %v", err)
+	}
+
+	log.SetOutput(f)
 
 	StableWorldBucket = os.Getenv("STABLE_WORLD_BUCKET")
 	if StableWorldBucket == "" {
-		if testing {
-			StableWorldBucket = "TESTING"
-		} else {
-			fmt.Fprint(os.Stderr, "envvar STABLE_WORLD_BUCKET is required to be set")
-			os.Exit(1)
-		}
+		fmt.Fprint(os.Stderr, "envvar STABLE_WORLD_BUCKET is required to be set")
+		os.Exit(1)
+
 	}
 
 	StableWorldURL = os.Getenv("STABLE_WORLD_URL")
 	if StableWorldURL == "" {
 		StableWorldURL = "http://localhost:3011"
 	}
-	err := setupRootCA()
+	err = setupRootCA()
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	parsedURL, err := url.Parse(StableWorldURL)
 	if err != nil {

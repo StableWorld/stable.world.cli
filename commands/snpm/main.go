@@ -11,7 +11,7 @@ import (
 var Exe string
 
 func main() {
-
+	common.Defaults()
 	npm := common.GetExecutable("npm")
 	argsToCmd := os.Args[1:]
 	env := []string{

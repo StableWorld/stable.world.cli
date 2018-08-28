@@ -10,15 +10,21 @@ import (
 // Exe is the executable to run
 var Exe string
 
+func makeEnv(URL string, bucket string, CAPath string) []string {
+
+	proxyURL := common.MakeProxyURL(URL, bucket)
+	return []string{
+		fmt.Sprintf("https_proxy=%s", proxyURL),
+		fmt.Sprintf("http_proxy=%s", proxyURL),
+		fmt.Sprintf("CURL_CA_BUNDLE=%s", CAPath),
+	}
+}
+
 func main() {
 
 	npm := common.GetExecutable("curl")
 	argsToCmd := os.Args[1:]
-	env := []string{
-		fmt.Sprintf("https_proxy=%s", common.StableWorldProxyURL),
-		fmt.Sprintf("http_proxy=%s", common.StableWorldProxyURL),
-		fmt.Sprintf("CURL_CA_BUNDLE=%s", common.StableWorldCA),
-	}
+	env := makeEnv(common.StableWorldURL, common.StableWorldBucket, common.StableWorldCA)
 	exitCode := common.Exec(npm, argsToCmd, env)
 	os.Exit(exitCode)
 }

@@ -13,6 +13,8 @@ var Exe string
 func makeEnv(URL string, bucket string, CAPath string) []string {
 
 	proxyURL := common.MakeProxyURL(URL, bucket)
+	fmt.Println("proxyURL", proxyURL)
+
 	return []string{
 		fmt.Sprintf("https_proxy=%s", proxyURL),
 		fmt.Sprintf("http_proxy=%s", proxyURL),

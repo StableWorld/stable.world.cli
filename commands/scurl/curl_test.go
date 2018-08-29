@@ -1,16 +1,24 @@
 package main
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/go-test/deep"
 )
 
-func TestSomething(t *testing.T) {
+func TestMakeEnv(t *testing.T) {
 	// test stuff here...
 	//
-	expectedEnv := []string{"https_proxy=", "http_proxy=", "CURL_CA_BUNDLE=/path"}
+	expectedEnv := []string{
+		"https_proxy=http://sw:BUCKET@example.com",
+		"http_proxy=http://sw:BUCKET@example.com",
+		"CURL_CA_BUNDLE=/path",
+	}
+
 	givenEnv := makeEnv("http://example.com", "BUCKET", "/path")
+
+	fmt.Println("givenEnv", givenEnv)
 	if diff := deep.Equal(givenEnv, expectedEnv); diff != nil {
 		t.Error(diff)
 	}

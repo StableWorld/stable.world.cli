@@ -72,11 +72,11 @@ func setupRootCA() error {
 
 // MakeProxyURL takes a url and a bucket an generates url with auth
 func MakeProxyURL(URL string, bucket string) string {
-	parsedURL, err := url.Parse(StableWorldURL)
+	parsedURL, err := url.Parse(URL)
 	if err != nil {
 		log.Fatal(err)
 	}
-	parsedURL.User = url.UserPassword("sw", StableWorldBucket)
+	parsedURL.User = url.UserPassword("sw", bucket)
 	return parsedURL.String()
 }
 

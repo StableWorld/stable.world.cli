@@ -11,6 +11,11 @@ jobs:
     steps:
       - checkout
       - run:
+         name: Dep
+         command: |
+           curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+           dep ensure
+      - run:
          name: Build
          command: go build ./...
       - run:

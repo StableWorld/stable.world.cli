@@ -21,7 +21,8 @@ func WereIs(exe string) string {
 
 // GetExecutable finds an executable from envvar or throws error
 func GetExecutable(name string) string {
-	Exe := os.Getenv(fmt.Sprintf("STABLE_WORLD_%", strings.ToUpper(name)))
+	envName := fmt.Sprintf("STABLE_WORLD_%s", strings.ToUpper(name))
+	Exe := os.Getenv(envName)
 	if Exe != "" {
 		return Exe
 	}

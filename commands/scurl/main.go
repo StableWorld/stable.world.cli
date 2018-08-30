@@ -11,10 +11,7 @@ import (
 var Exe string
 
 func makeEnv(URL string, bucket string, CAPath string) []string {
-
 	proxyURL := common.MakeProxyURL(URL, bucket)
-	fmt.Println("proxyURL", proxyURL)
-
 	return []string{
 		fmt.Sprintf("https_proxy=%s", proxyURL),
 		fmt.Sprintf("http_proxy=%s", proxyURL),
@@ -24,9 +21,21 @@ func makeEnv(URL string, bucket string, CAPath string) []string {
 
 func main() {
 
-	npm := common.GetExecutable("curl")
-	argsToCmd := os.Args[1:]
-	env := makeEnv(common.StableWorldURL, common.StableWorldBucket, common.StableWorldCA)
-	exitCode := common.Exec(npm, argsToCmd, env)
+	url := common.URL()
+	bucket, err := common.Bucket()
+	if err != nil {
+		fmt.Print(err)
+		os.Exit(1)
+	}
+	ca, err := common.CA(url)
+	if err != nil {
+		fmt.Print(err)
+		os.Exit(1)
+	}
+
+	curl := common.Wrap("curl", os.Args[1:])
+	env := makeEnv(url, bucket, ca)
+	curl.SetEnv(env)
+	exitCode := curl.Exec()
 	os.Exit(exitCode)
 }

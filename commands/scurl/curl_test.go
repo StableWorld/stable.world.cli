@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/go-test/deep"
@@ -17,8 +16,6 @@ func TestMakeEnv(t *testing.T) {
 	}
 
 	givenEnv := makeEnv("http://example.com", "BUCKET", "/path")
-
-	fmt.Println("givenEnv", givenEnv)
 	if diff := deep.Equal(givenEnv, expectedEnv); diff != nil {
 		t.Error(diff)
 	}

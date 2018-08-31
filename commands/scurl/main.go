@@ -19,23 +19,30 @@ func makeEnv(URL string, bucket string, CAPath string) []string {
 	}
 }
 
-func main() {
+func run() int {
+	common.SetupLog()
+	defer common.TeardownLogFile()
 
 	url := common.URL()
 	bucket, err := common.Bucket()
 	if err != nil {
 		fmt.Print(err)
-		os.Exit(1)
+		return 1
 	}
 	ca, err := common.CA(url)
 	if err != nil {
 		fmt.Print(err)
-		os.Exit(1)
+		return 1
 	}
 
 	curl := common.Wrap("curl", os.Args[1:])
 	env := makeEnv(url, bucket, ca)
 	curl.SetEnv(env)
 	exitCode := curl.Exec()
-	os.Exit(exitCode)
+	return exitCode
+
+}
+
+func main() {
+	os.Exit(run())
 }

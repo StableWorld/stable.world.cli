@@ -20,7 +20,7 @@ func makeEnv(URL string, bucket string, CAPath string) []string {
 }
 
 func main() {
-
+	common.SetupLog()
 	url := common.URL()
 	bucket, err := common.Bucket()
 	if err != nil {
